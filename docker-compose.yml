@@ -1,0 +1,10 @@
+version: '3'
+services:
+    php:
+        build:
+            context: ./.containers/php
+        image: tcta:latest
+        container_name: tcta
+        volumes:
+          - "./.containers/php/config/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini"
+          - ".:/var/www/html/tcta"
