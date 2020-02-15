@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-use ArrayIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,7 +11,6 @@ use Carbon\Carbon;
 use League\Csv\Reader;
 use League\Csv\Writer;
 
-use App\Exception\InvalidFileException;
 use App\Exception\InvalidApplicationUsageException;
 use App\Exception\FileValidationException;
 
@@ -81,10 +79,8 @@ class CreateCakeReportCommand extends Command
 
                 $errors = $e->getErrors();
                 foreach ($errors as $error) {
-                    $io->warning('Row ' . $error['row'] . ' Column ' . $error['field'] . ': ' . $error['error']);
+                    $output->writeln('Row ' . $error['row'] . '. Column \'' . $error['field'] . '\': ' . $error['error']);
                 }
-
-            } catch (\Throwable $e) {
                 throw $e;
             }
         } catch (\Throwable $e) {
@@ -105,14 +101,13 @@ class CreateCakeReportCommand extends Command
     /**
      * Build a CSV reader instance from stdin
      *
-     * @throws \League\Csv\Exception
+     * @throws \Exception
      */
     private function buildInputCsv(): void
     {
         $this->reader = Reader::createFromString($this->stdin);
         $this->reader->setHeaderOffset(0);
     }
-
 
     /**
      * Validates the incoming file, throws exception if errors.
@@ -164,13 +159,27 @@ class CreateCakeReportCommand extends Command
                     $this->input_file_validation_errors[] = [
                         'row' => $actual_row,
                         'field' => $name,
-                        'error' => $name . ' can not be blank.',
+                        'error' => 'Can not be blank.',
                     ];
                 }
             }
 
             try {
-                Carbon::createFromFormat('Y-m-d', $content['DOB']);
+                // Carbon gets next valid date if date is invalid..
+                if (strlen($content['DOB']) != 10) {
+                    throw new Exception('Invalid date length.');
+                }
+
+                // YYYY-MM-DD
+                // 0123456789
+                $month = substr($content['DOB'], 5, 2);
+                $day   = substr($content['DOB'], 8, 2);
+                $year  = substr($content['DOB'], 0, 4);
+
+                $valid_date = checkdate($month, $day, $year);
+                if (!$valid_date) {
+                    throw new Exception('Invalid date');
+                }
             } catch (\Throwable $e) {
                 $this->input_file_validation_errors[] = [
                     'row' => $actual_row,
