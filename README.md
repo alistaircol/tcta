@@ -26,6 +26,16 @@ Example:
 docker exec -i -u 1000 tcta bash -c "php cakes report" < example.csv 
 ```
 
+Alternatively:
+
+```
+docker exec -i -u 1000 tcta bash -c "php cakes report" << "CSV"
+Name,DOB
+Steve,1992-10-14
+Mary,1989-06-21
+CSV
+```
+
 This will output:
 
 ```
@@ -42,6 +52,15 @@ You can save this to a file. Example `output.csv`:
 docker exec -i -u 1000 tcta bash -c "php cakes report" < example.csv > output.csv
 ```
 
+Alternatively:
+
+```
+docker exec -i -u 1000 tcta bash -c "php cakes report" << "CSV" > output.csv
+Name,DOB
+Steve,1992-10-14
+Mary,1989-06-21
+CSV
+```
 
 ## Pre-requisites
 
@@ -84,7 +103,6 @@ docker exec -it -u 1000 tcta bash -c "./vendor/bin/phpunit --testdox"
 Example output:
 
 ```
-docker exec -it -u 1000 tcta bash -c "./vendor/bin/phpunit --testdox "
 PHPUnit 9.0.1 by Sebastian Bergmann and contributors.
 
 Next Leap Year
@@ -101,6 +119,13 @@ Person Cake Date
  ✔ Born 24 december birthday thursday 24 gets a cake on monday 28 december 2020
  ✔ Born thursday 31 december birthday thursday 31 gets cake on monday 4 january 2021
 
+Import File
+ ✔ File with invalid headers will give errors
+ ✔ File with empty name will give error
+ ✔ File with empty dob will give error
+ ✔ File with invalid dob will give error
+ ✔ Valid file will be successful
+
 People Cake Person
  ✔ Sam born 13 july kate born 14 july share a large cake on 15 july
  ✔ Two born same date will share a large cake the next working day
@@ -110,10 +135,12 @@ People Cake Person
  ✔ One person born end of year is not incuded in current year distribution since it is moved to new year
  ✔ Steve born 14 oct gets small cake 15 oct mary born 21 june gets small cake 23 june
 
-Time: 51 ms, Memory: 8.00 MB
+Time: 246 ms, Memory: 8.00 MB
 
-OK (17 tests, 83 assertions)
+OK (22 tests, 94 assertions)
 ```
+
+**Note** because of `ImportFileTest` using a hacky method for testing (no easy way I could see to use proper [Symfony console command component testing](https://symfony.com/doc/current/console.html#testing-commands)) to attach some `stdin` so I have to use [`exec`](https://www.php.net/manual/en/function.exec.php) which causes some issues with XDebug. If you have issues with these tests completing and they are freezing, double check your debugger in IDE is turned off.
 
 ## Design Choices
 
