@@ -216,6 +216,40 @@ final class PeopleCakePersonTest extends TestCase
         $this->assertCount(0, $distribution);
     }
 
+    public function testSteveBorn14OctGetsSmallCake15OctMaryBorn21JuneGetsSmallCake23June()
+    {
+        $steve = (new Person())->name('Steve')->dob(new Carbon('1992-10-14'));
+        $mary  = (new Person())->name('Mary')->dob(new Carbon('1989-06-21'));
+
+
+        $people = new ArrayIterator([], ArrayIterator::STD_PROP_LIST);
+        $people->append($steve);
+        $people->append($mary);
+
+        $cake_distribution = new CakeDistribution();
+        $cake_distribution->setPeople($people);
+
+        $distribution = $cake_distribution->getDistribution();
+
+        $this->assertCount(2, $distribution);
+
+        // Mary
+        $key = '2020-06-23';
+        $this->assertArrayHasKey($key,$distribution);
+        $this->assertInstanceOf(Cake::class, $distribution[$key]);
+        $this->assertEquals('small', $distribution[$key]->getCakeSize());
+        $this->assertCount(1, $distribution[$key]->getPeople());
+        $this->assertTrue($this->hasPerson($distribution[$key]->getPeople(), 'Mary'));
+
+        // Steve
+        $key = '2020-10-15';
+        $this->assertArrayHasKey($key,$distribution);
+        $this->assertInstanceOf(Cake::class, $distribution[$key]);
+        $this->assertEquals('small', $distribution[$key]->getCakeSize());
+        $this->assertCount(1, $distribution[$key]->getPeople());
+        $this->assertTrue($this->hasPerson($distribution[$key]->getPeople(), 'Steve'));
+    }
+
     /**
      * @param array $people array of people (returned from distribution)
      * @param string $name

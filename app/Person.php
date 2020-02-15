@@ -139,6 +139,6 @@ class Person
 
     public function __toString()
     {
-        return $this->getName() . ' - ' . $this->getDob()->format('Y-m-d');
+        return $this->getName();
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 use App\Person;
-use App\Cake;
 use Carbon\Carbon;
 
 final class PersonCakeDateTest extends TestCase

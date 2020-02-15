@@ -47,13 +47,17 @@ class CakeDistribution
 
             // If there are some cakes already allocated then we may need to alter
             // future cake dates to consider the cake free day
+            $current_cake_date = $current_person->getCakeDate()->format('Y-m-d');
             if (!empty($this->distribution)) {
                 $last_cake_day = array_key_last($this->distribution);
                 $cake_free_day = (new Carbon($last_cake_day))->modify('+1 day');
                 $next_available_cake_day = $this->getNextWorkingDay($cake_free_day);
-                $current_cake_date = $next_available_cake_day->format('Y-m-d');
-            } else {
-                $current_cake_date = $current_person->getCakeDate()->format('Y-m-d');
+
+                // Again, if there is previous distribution we set $current_cake_date
+                // to be the next available date if the next cake day is behind this date.
+                if ($current_person->getCakeDate()->lessThan($next_available_cake_day)) {
+                    $current_cake_date = $next_available_cake_day->format('Y-m-d');
+                }
             }
 
             // Get the next working date to see whether the next cake day falls on this day,
