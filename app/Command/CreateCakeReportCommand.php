@@ -77,5 +77,18 @@ class CreateCakeReportCommand extends Command
     private function buildReport()
     {
         //
+        // Output:
+        // Date, Number of Small Cakes, Number of Large Cakes, Names of people getting cake
+
+        // TODO: validate CSV rows
+        // TODO: throw CSV file exception with errors
+
+        try {
+            $writer = Writer::createFromString('');
+            $writer->insertOne(['Date', 'Number of Small Cakes', 'Number of Large Cakes', 'Names of people getting cake']);
+
+        } catch (\Throwable $e) {
+            // TODO: handle
+        }
     }
 }
