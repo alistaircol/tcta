@@ -88,11 +88,6 @@ class Person
     /**
      * Gets the persons provisional cake date.
      *
-     * This will take into account if the birthday falls on a weekend or a holiday, it will be given
-     * the next day. Does not consider other Persons birthdays.
-     *
-     * An employee gets their birthday off
-     *
      * @throws \Exception
      * @return Carbon
      */
@@ -105,9 +100,7 @@ class Person
      * Calculate the provisional cake date.
      *
      * This will take into account if the birthday falls on a weekend or a holiday, it will be given
-     * the next day. Does not consider other Persons birthdays.
-     *
-     * An employee gets their birthday off
+     * the next day. Does not consider other Persons birthdays. CakeDistribution deals with that.
      *
      * @throws \Exception
      */
