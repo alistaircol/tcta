@@ -3,31 +3,32 @@ namespace App;
 
 use Carbon\Carbon;
 use ArrayIterator;
+use Exception;
 
 class CakeDistribution
 {
     use DateHelper;
 
     private array $distribution = [];
-    private \CachingIterator $people;
+    private ArrayIterator $people;
     private \SplStack $stack;
 
     /**
      * Set an array iterator containing all people.
      *
-     * @throws \Exception
-     * @param \ArrayIterator $people
+     * @throws Exception
+     * @param ArrayIterator $people
      */
     public function setPeople(ArrayIterator $people)
     {
-        $this->people = new \CachingIterator($people);
+        $this->people = $people;
     }
 
     /**
      * Get cake distribution from people.
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getDistribution()
     {
